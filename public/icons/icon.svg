@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <rect width="512" height="512" rx="80" fill="#1a472a"/>
+  <rect x="50" y="80" width="190" height="260" rx="16" fill="white"/>
+  <text x="145" y="240" font-family="serif" font-size="120" font-weight="bold" fill="#c41e3a" text-anchor="middle">♥</text>
+  <text x="80" y="140" font-family="serif" font-size="48" font-weight="bold" fill="#c41e3a">A</text>
+  <rect x="272" y="172" width="190" height="260" rx="16" fill="#1a5c32" stroke="#d4a843" stroke-width="4"/>
+  <text x="367" y="330" font-family="serif" font-size="80" fill="#d4a843" text-anchor="middle" opacity="0.6">♦</text>
+</svg>
