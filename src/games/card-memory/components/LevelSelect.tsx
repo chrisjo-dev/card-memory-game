@@ -6,6 +6,7 @@ interface LevelSelectProps {
   records: GameRecords
   unlockedLevel: number
   onSelectLevel: (level: number) => void
+  onHome?: () => void
 }
 
 function StarDisplay({ count }: { count: number }) {
@@ -20,9 +21,19 @@ function StarDisplay({ count }: { count: number }) {
   )
 }
 
-export default function LevelSelect({ records, unlockedLevel, onSelectLevel }: LevelSelectProps) {
+export default function LevelSelect({ records, unlockedLevel, onSelectLevel, onHome }: LevelSelectProps) {
   return (
     <div className="flex flex-col items-center justify-center min-h-full px-6 py-8">
+      {onHome && (
+        <button
+          onClick={onHome}
+          className="absolute top-4 left-4 text-xl text-white/60 hover:text-white transition-colors p-2"
+          style={{ paddingTop: 'calc(env(safe-area-inset-top) + 1rem)' }}
+          aria-label="Dashboard"
+        >
+          &#8592;
+        </button>
+      )}
       <motion.h1
         className="text-4xl font-bold text-yellow-400 mb-2 font-serif tracking-wide"
         initial={{ opacity: 0, y: -20 }}

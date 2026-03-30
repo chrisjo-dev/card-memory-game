@@ -1,128 +1,114 @@
-import { useState, useCallback, useEffect, useRef } from 'react'
+import { useState } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
-import { useGameLogic } from './hooks/useGameLogic'
-import { useTimer } from './hooks/useTimer'
-import { useGameRecords } from './hooks/useLocalStorage'
-import { calculateStars } from './utils/scoring'
-import { LEVELS } from './utils/deck'
+import CardMemoryGame from './games/card-memory/CardMemoryGame'
+import NBackGame from './games/n-back/NBackGame'
+import { useGameRecords } from './games/card-memory/hooks/useGameRecords'
+import { useNBackRecords } from './games/n-back/hooks/useNBackRecords'
 
-const MAX_LEVEL = LEVELS.length
-import LevelSelect from './components/LevelSelect'
-import GameHUD from './components/GameHUD'
-import CardGrid from './components/CardGrid'
-import ClearModal from './components/ClearModal'
+type Screen = 'dashboard' | 'card-memory' | 'n-back'
 
-type Screen = 'menu' | 'game'
+function Dashboard({ onSelectGame, cardMemoryBestLevel, nBackBestN }: {
+  onSelectGame: (game: 'card-memory' | 'n-back') => void
+  cardMemoryBestLevel: number
+  nBackBestN: number
+}) {
+  const games = [
+    { id: 'card-memory' as const, icon: '🃏', title: 'Card Memory', desc: 'Find matching pairs', stat: `Best: Lv.${cardMemoryBestLevel}` },
+    { id: 'n-back' as const, icon: '🧠', title: 'Dual N-Back', desc: 'Working memory training', stat: `Best: ${nBackBestN}-Back` },
+  ]
+
+  return (
+    <div className="flex flex-col items-center justify-center min-h-full px-6">
+      <motion.h1
+        className="text-4xl font-bold text-yellow-400 font-serif mb-2"
+        initial={{ opacity: 0, y: -20 }}
+        animate={{ opacity: 1, y: 0 }}
+      >
+        Brain Training
+      </motion.h1>
+      <motion.p
+        className="text-white/50 text-sm mb-10"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 0.1 }}
+      >
+        Train your memory
+      </motion.p>
+      <div className="w-full max-w-xs space-y-4">
+        {games.map((game, i) => (
+          <motion.button
+            key={game.id}
+            onClick={() => onSelectGame(game.id)}
+            className="w-full bg-white/10 border border-yellow-600/40 rounded-2xl p-5 text-left hover:bg-white/20 active:scale-[0.98] transition-all"
+            initial={{ opacity: 0, x: -30 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ delay: 0.15 * i }}
+          >
+            <div className="flex items-center gap-4">
+              <span className="text-3xl">{game.icon}</span>
+              <div className="flex-1">
+                <h2 className="text-lg font-bold text-yellow-400">{game.title}</h2>
+                <p className="text-white/50 text-sm">{game.desc}</p>
+              </div>
+              <span className="text-white/40 text-xs">{game.stat}</span>
+            </div>
+          </motion.button>
+        ))}
+      </div>
+    </div>
+  )
+}
 
 function App() {
-  const [screen, setScreen] = useState<Screen>('menu')
-  const [currentLevel, setCurrentLevel] = useState(1)
-  const { seconds, start, stop, reset } = useTimer()
-  const { records, saveRecord, unlockedLevel } = useGameRecords()
-  const savedRef = useRef(false)
+  const [screen, setScreen] = useState<Screen>('dashboard')
+  const { records: cardRecords } = useGameRecords()
+  const { bestN } = useNBackRecords()
 
-  const onFirstFlip = useCallback(() => {
-    start()
-  }, [start])
-
-  const onClear = useCallback(() => {
-    stop()
-  }, [stop])
-
-  const { cards, attempts, gameState, flipCard, initGame } = useGameLogic(onFirstFlip, onClear)
-
-  const levelConfig = LEVELS[currentLevel - 1]
-
-  const handleSelectLevel = useCallback((level: number) => {
-    setCurrentLevel(level)
-    setScreen('game')
-    reset()
-    const config = LEVELS[level - 1]
-    initGame(config)
-  }, [reset, initGame])
-
-  const handleHome = useCallback(() => {
-    setScreen('menu')
-    reset()
-  }, [reset])
-
-  const handleRetry = useCallback(() => {
-    reset()
-    initGame(levelConfig)
-  }, [reset, initGame, levelConfig])
-
-  const handleNextLevel = useCallback(() => {
-    const next = currentLevel + 1
-    if (next <= MAX_LEVEL) {
-      setCurrentLevel(next)
-      reset()
-      initGame(LEVELS[next - 1])
-    }
-  }, [currentLevel, reset, initGame])
-
-  const stars = gameState === 'cleared' ? calculateStars(attempts, levelConfig.pairs) : 0
-
-  useEffect(() => {
-    if (gameState === 'cleared' && stars > 0 && !savedRef.current) {
-      savedRef.current = true
-      saveRecord(currentLevel, attempts, seconds, stars)
-    }
-    if (gameState !== 'cleared') {
-      savedRef.current = false
-    }
-  }, [gameState, stars, currentLevel, attempts, seconds, saveRecord])
+  const cardMemoryBestLevel = Object.keys(cardRecords).length > 0
+    ? Math.max(...Object.keys(cardRecords).map(Number))
+    : 0
 
   return (
     <div className="h-full flex flex-col">
       <AnimatePresence mode="wait">
-        {screen === 'menu' ? (
+        {screen === 'dashboard' && (
           <motion.div
-            key="menu"
+            key="dashboard"
             className="h-full"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.2 }}
           >
-            <LevelSelect
-              records={records}
-              unlockedLevel={unlockedLevel}
-              onSelectLevel={handleSelectLevel}
+            <Dashboard
+              onSelectGame={setScreen}
+              cardMemoryBestLevel={cardMemoryBestLevel}
+              nBackBestN={bestN}
             />
           </motion.div>
-        ) : (
+        )}
+        {screen === 'card-memory' && (
           <motion.div
-            key="game"
-            className="h-full flex flex-col"
+            key="card-memory"
+            className="h-full"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.2 }}
           >
-            <GameHUD
-              level={currentLevel}
-              attempts={attempts}
-              seconds={seconds}
-              onHome={handleHome}
-            />
-            <CardGrid
-              cards={cards}
-              gridCols={levelConfig.gridCols}
-              onCardClick={flipCard}
-              disabled={gameState === 'checking' || gameState === 'cleared'}
-            />
-            {gameState === 'cleared' && (
-              <ClearModal
-                level={currentLevel}
-                stars={stars}
-                attempts={attempts}
-                seconds={seconds}
-                isLastLevel={currentLevel === MAX_LEVEL}
-                onRetry={handleRetry}
-                onNextLevel={handleNextLevel}
-                onHome={handleHome}
-              />
-            )}
+            <CardMemoryGame onHome={() => setScreen('dashboard')} />
+          </motion.div>
+        )}
+        {screen === 'n-back' && (
+          <motion.div
+            key="n-back"
+            className="h-full"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.2 }}
+          >
+            <NBackGame onHome={() => setScreen('dashboard')} />
           </motion.div>
         )}
       </AnimatePresence>

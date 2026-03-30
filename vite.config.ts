@@ -11,9 +11,9 @@ export default defineConfig({
     VitePWA({
       registerType: 'autoUpdate',
       manifest: {
-        name: 'Card Memory Game',
-        short_name: 'Card Memory',
-        description: '기억력 향상을 위한 포커카드 짝맞추기 게임',
+        name: 'Brain Training',
+        short_name: 'Brain Train',
+        description: '기억력 향상을 위한 두뇌 훈련 게임',
         theme_color: '#1a472a',
         background_color: '#1a472a',
         display: 'standalone',

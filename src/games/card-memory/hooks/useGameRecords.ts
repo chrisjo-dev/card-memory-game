@@ -1,27 +1,7 @@
-import { useState, useCallback, useMemo } from 'react'
+import { useCallback, useMemo } from 'react'
+import { useLocalStorage } from '../../../shared/hooks/useLocalStorage'
 import type { GameRecords, LevelRecord } from '../types/game'
 import { LEVELS } from '../utils/deck'
-
-function useLocalStorage<T>(key: string, defaultValue: T): [T, (value: T | ((prev: T) => T)) => void] {
-  const [storedValue, setStoredValue] = useState<T>(() => {
-    try {
-      const item = localStorage.getItem(key)
-      return item ? JSON.parse(item) : defaultValue
-    } catch {
-      return defaultValue
-    }
-  })
-
-  const setValue = useCallback((value: T | ((prev: T) => T)) => {
-    setStoredValue(prev => {
-      const newValue = value instanceof Function ? value(prev) : value
-      localStorage.setItem(key, JSON.stringify(newValue))
-      return newValue
-    })
-  }, [key])
-
-  return [storedValue, setValue]
-}
 
 const STORAGE_KEY = 'card-memory-records'
 
