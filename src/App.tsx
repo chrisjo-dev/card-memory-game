@@ -49,7 +49,7 @@ function Dashboard({ onSelectGame, cardMemoryBestLevel, nBackBestN, reverseSpanB
   reverseSpanBest: number
 }) {
   return (
-    <div className="flex flex-col items-center justify-center min-h-full px-6">
+    <div className="flex flex-col items-center justify-center min-h-screen px-6">
       <motion.div
         className="mb-1 text-[var(--casino-gold)]/30 text-5xl"
         initial={{ opacity: 0, scale: 0.5, rotate: -10 }}

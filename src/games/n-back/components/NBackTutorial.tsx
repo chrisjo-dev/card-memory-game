@@ -80,7 +80,7 @@ export default function NBackTutorial({ onDone }: NBackTutorialProps) {
   const isLast = step === STEPS.length - 1
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-full px-6 py-8">
+    <div className="flex flex-col items-center justify-center min-h-screen px-6 py-8">
       <motion.div
         className="w-full max-w-sm bg-gradient-to-b from-green-900 to-green-950 rounded-2xl border border-yellow-600/40 p-6"
         initial={{ scale: 0.9, opacity: 0 }}

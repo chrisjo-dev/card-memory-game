@@ -67,7 +67,7 @@ export default function StatsView({ records, onBack }: StatsViewProps) {
     : 0
 
   return (
-    <div className="flex flex-col items-center min-h-full px-6 py-8">
+    <div className="flex flex-col items-center min-h-screen relative px-6 py-8">
       <button
         onClick={onBack}
         className="absolute top-4 left-4 text-xl text-white/60 hover:text-white transition-colors p-2"

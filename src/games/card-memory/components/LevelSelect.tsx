@@ -23,7 +23,7 @@ function StarDisplay({ count }: { count: number }) {
 
 export default function LevelSelect({ records, unlockedLevel, onSelectLevel, onHome }: LevelSelectProps) {
   return (
-    <div className="flex flex-col items-center justify-center min-h-full px-6 py-8">
+    <div className="flex flex-col items-center justify-center min-h-screen px-6 py-8 relative">
       {onHome && (
         <button
           onClick={onHome}

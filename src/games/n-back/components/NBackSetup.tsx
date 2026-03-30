@@ -19,7 +19,7 @@ export default function NBackSetup({ recommendedN, onStart, onHome, onStats }: N
   const [mode, setMode] = useState<NBackMode>('card-only')
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-full px-6 py-8">
+    <div className="flex flex-col items-center justify-center min-h-screen relative px-6 py-8">
       <button
         onClick={onHome}
         className="absolute top-4 left-4 text-xl text-white/60 hover:text-white transition-colors p-2"
