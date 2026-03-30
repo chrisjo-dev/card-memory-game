@@ -60,6 +60,23 @@ export default function NBackGame({ onHome }: NBackGameProps) {
     }
   }, [phase, config, handleRoundComplete])
 
+  // 키보드 단축키: Z=Position, X=Card
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (phase !== 'playing' || !config || !isShowingCard || currentTrial < config.nLevel) return
+      if (e.key === 'z' || e.key === 'Z' || e.key === 'ArrowLeft') {
+        e.preventDefault()
+        pressPosition()
+      }
+      if (e.key === 'x' || e.key === 'X' || e.key === 'ArrowRight') {
+        e.preventDefault()
+        pressCard()
+      }
+    }
+    window.addEventListener('keydown', handleKeyDown)
+    return () => window.removeEventListener('keydown', handleKeyDown)
+  }, [phase, config, isShowingCard, currentTrial, pressPosition, pressCard])
+
   // N번 전 자극 (힌트용)
   const nBackStimulus = config && currentTrial >= config.nLevel && trials[currentTrial - config.nLevel]
     ? trials[currentTrial - config.nLevel].stimulus

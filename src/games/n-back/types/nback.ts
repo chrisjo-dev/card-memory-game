@@ -35,7 +35,7 @@ export interface NBackRoundConfig {
 }
 
 export const SPEED_CONFIG: Record<Speed, { showMs: number; gapMs: number; label: string }> = {
-  slow: { showMs: 3000, gapMs: 500, label: 'Slow' },
+  slow: { showMs: 4000, gapMs: 600, label: 'Slow' },
   normal: { showMs: 2000, gapMs: 500, label: 'Normal' },
   fast: { showMs: 1500, gapMs: 400, label: 'Fast' },
 }

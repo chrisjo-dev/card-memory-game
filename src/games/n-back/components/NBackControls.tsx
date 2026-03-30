@@ -80,7 +80,7 @@ export default function NBackControls({
   return (
     <div className="px-4 pb-4 pt-2">
       <p className="text-white/40 text-xs text-center mb-2">
-        {nBackStimulus ? `${nLevel}번 전과 같으면 누르세요` : `첫 ${nLevel}개는 기억만 하세요`}
+        {nBackStimulus ? `${nLevel}번 전과 같으면 누르세요 (키보드: Z / X)` : `첫 ${nLevel}개는 기억만 하세요`}
       </p>
       <div className="flex gap-3">
         <ControlButton
