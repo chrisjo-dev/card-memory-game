@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef } from 'react'
+import { useCallback, useEffect, useRef, useMemo } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
 import { useReverseSpanLogic } from './hooks/useReverseSpanLogic'
 import { useReverseSpanRecords } from './hooks/useReverseSpanRecords'
@@ -43,9 +43,21 @@ export default function ReverseSpanGame({ onHome }: ReverseSpanGameProps) {
     startRound()
   }, [startRound])
 
-  const remainingCards = phase === 'answering'
-    ? sequence.filter((card) => !playerAnswers.some(a => a.id === card.id))
-    : []
+  // Shuffle choices once when answering phase starts
+  const shuffledSequence = useMemo(() => {
+    if (phase !== 'answering') return []
+    const arr = [...sequence]
+    for (let i = arr.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [arr[i], arr[j]] = [arr[j], arr[i]]
+    }
+    return arr
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [phase, sequence.length])
+
+  const remainingCards = shuffledSequence.filter(
+    card => !playerAnswers.some(a => a.id === card.id)
+  )
 
   return (
     <div className="h-full flex flex-col relative">
