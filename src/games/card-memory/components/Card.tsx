@@ -39,7 +39,11 @@ export default function Card({ card, onClick, disabled }: CardProps) {
         <div
           className="absolute inset-0 rounded-xl card-back-pattern shadow-lg"
           style={{ backfaceVisibility: 'hidden' }}
-        />
+        >
+          <div className="card-back-inner">
+            <span className="card-back-symbol">♠</span>
+          </div>
+        </div>
 
         <div
           className="absolute inset-0 rounded-xl border border-gray-200 flex flex-col p-1.5 overflow-hidden shadow-lg"

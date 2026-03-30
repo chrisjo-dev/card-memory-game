@@ -106,11 +106,9 @@ body::before {
 .card-back-pattern {
   background:
     linear-gradient(135deg, #1a5c32 0%, #0d3d1f 100%);
-  position: relative;
   overflow: hidden;
 }
-.card-back-pattern::before {
-  content: '';
+.card-back-pattern .card-back-inner {
   position: absolute;
   inset: 6px;
   border: 1.5px solid rgba(201, 168, 76, 0.35);
@@ -118,13 +116,11 @@ body::before {
   background:
     repeating-linear-gradient(45deg, transparent, transparent 4px, rgba(201, 168, 76, 0.06) 4px, rgba(201, 168, 76, 0.06) 5px),
     repeating-linear-gradient(-45deg, transparent, transparent 4px, rgba(201, 168, 76, 0.06) 4px, rgba(201, 168, 76, 0.06) 5px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
-.card-back-pattern::after {
-  content: '♠';
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
+.card-back-pattern .card-back-symbol {
   font-size: 1.5rem;
   color: rgba(201, 168, 76, 0.25);
   font-family: var(--font-display);
