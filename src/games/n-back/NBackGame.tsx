@@ -17,7 +17,7 @@ interface NBackGameProps {
 export default function NBackGame({ onHome }: NBackGameProps) {
   const {
     phase, currentTrial, currentStimulus, isShowingCard,
-    positionPressed, cardPressed, lastFeedback,
+    trials, positionPressed, cardPressed, lastFeedback,
     config, startRound, pressPosition, pressCard,
     positionAccuracy, cardAccuracy, adaptiveResult, setPhase,
   } = useNBackLogic()
@@ -54,6 +54,11 @@ export default function NBackGame({ onHome }: NBackGameProps) {
       savedRef.current = false
     }
   }, [phase, config, handleRoundComplete])
+
+  // N번 전 자극 (힌트용)
+  const nBackStimulus = config && currentTrial >= config.nLevel && trials[currentTrial - config.nLevel]
+    ? trials[currentTrial - config.nLevel].stimulus
+    : null
 
   const gridFeedback = lastFeedback
     ? (lastFeedback.position && lastFeedback.card ? 'correct'
@@ -110,6 +115,8 @@ export default function NBackGame({ onHome }: NBackGameProps) {
               cardPressed={cardPressed}
               disabled={!isShowingCard || currentTrial < config.nLevel}
               feedback={lastFeedback}
+              nBackStimulus={nBackStimulus}
+              nLevel={config.nLevel}
             />
           </motion.div>
         )}
