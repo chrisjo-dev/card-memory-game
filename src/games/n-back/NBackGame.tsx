@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
 import { useNBackLogic } from './hooks/useNBackLogic'
 import { useNBackRecords } from './hooks/useNBackRecords'
@@ -9,6 +9,7 @@ import NBackGrid from './components/NBackGrid'
 import NBackControls from './components/NBackControls'
 import NBackResult from './components/NBackResult'
 import StatsView from './components/StatsView'
+import NBackTutorial from './components/NBackTutorial'
 
 interface NBackGameProps {
   onHome: () => void
@@ -23,6 +24,10 @@ export default function NBackGame({ onHome }: NBackGameProps) {
   } = useNBackLogic()
 
   const { records, saveSession, recommendedN } = useNBackRecords()
+
+  const [showTutorial, setShowTutorial] = useState(() => {
+    return !localStorage.getItem('nback-tutorial-done')
+  })
 
   const handleStart = useCallback((cfg: NBackRoundConfig) => {
     startRound(cfg)
@@ -69,7 +74,22 @@ export default function NBackGame({ onHome }: NBackGameProps) {
   return (
     <div className="h-full flex flex-col relative">
       <AnimatePresence mode="wait">
-        {phase === 'setup' && (
+        {showTutorial && (
+          <motion.div
+            key="tutorial"
+            className="h-full"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.2 }}
+          >
+            <NBackTutorial onDone={() => {
+              localStorage.setItem('nback-tutorial-done', '1')
+              setShowTutorial(false)
+            }} />
+          </motion.div>
+        )}
+        {!showTutorial && phase === 'setup' && (
           <motion.div
             key="setup"
             className="h-full"
