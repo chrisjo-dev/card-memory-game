@@ -33,8 +33,14 @@ export function useNBackLogic(): UseNBackLogicReturn {
   const [config, setConfig] = useState<NBackRoundConfig | null>(null)
 
   const stimuliRef = useRef<NBackStimulus[]>([])
+  const trialsRef = useRef<NBackTrial[]>([])
   const timeoutRef = useRef<number | null>(null)
   const feedbackTimeoutRef = useRef<number | null>(null)
+
+  // Keep trialsRef in sync with trials state
+  useEffect(() => {
+    trialsRef.current = trials
+  }, [trials])
 
   const clearTimeouts = useCallback(() => {
     if (timeoutRef.current !== null) {
@@ -59,6 +65,13 @@ export function useNBackLogic(): UseNBackLogicReturn {
     const posMatch = isPositionMatch(stimuli, trialIndex, cfg.nLevel)
     const cardMatch = isCardMatch(stimuli, trialIndex, cfg.nLevel)
 
+    // Read latest trials from ref (not stale closure)
+    const currentTrials = trialsRef.current
+    const trial = currentTrials[trialIndex]
+    const playerPos = trial?.playerPositionResponse ?? false
+    const playerCard = trial?.playerCardResponse ?? false
+
+    // Update trial with match info
     setTrials(prev => {
       const updated = [...prev]
       updated[trialIndex] = {
@@ -69,18 +82,16 @@ export function useNBackLogic(): UseNBackLogicReturn {
       return updated
     })
 
-    // Show feedback briefly
+    // Show feedback
     setIsShowingCard(false)
-    setLastFeedback(() => {
-      const trial = trials[trialIndex] || { playerPositionResponse: null, playerCardResponse: null }
-      const playerPos = trial.playerPositionResponse ?? false
-      const playerCard = trial.playerCardResponse ?? false
-      if (trialIndex < cfg.nLevel) return null
-      return {
+    if (trialIndex >= cfg.nLevel) {
+      setLastFeedback({
         position: playerPos === posMatch,
         card: playerCard === cardMatch,
-      }
-    })
+      })
+    } else {
+      setLastFeedback(null)
+    }
 
     const { gapMs, showMs } = SPEED_CONFIG[cfg.speed]
 
@@ -114,7 +125,7 @@ export function useNBackLogic(): UseNBackLogicReturn {
         advanceTrial(nextTrial, cfg, stimuli)
       }, showMs)
     }, gapMs)
-  }, [trials])
+  }, []) // No dependencies — reads from refs
 
   const startRound = useCallback((cfg: NBackRoundConfig) => {
     clearTimeouts()
@@ -136,6 +147,7 @@ export function useNBackLogic(): UseNBackLogicReturn {
       playerCardResponse: null,
     }]
     setTrials(initialTrials)
+    trialsRef.current = initialTrials
 
     const { showMs } = SPEED_CONFIG[cfg.speed]
     timeoutRef.current = window.setTimeout(() => {
@@ -153,6 +165,12 @@ export function useNBackLogic(): UseNBackLogicReturn {
       }
       return updated
     })
+    // Also update ref immediately so advanceTrial can read it
+    const updated = [...trialsRef.current]
+    if (updated[currentTrial]) {
+      updated[currentTrial] = { ...updated[currentTrial], playerPositionResponse: true }
+    }
+    trialsRef.current = updated
   }, [isShowingCard, config, currentTrial])
 
   const pressCard = useCallback(() => {
@@ -165,9 +183,15 @@ export function useNBackLogic(): UseNBackLogicReturn {
       }
       return updated
     })
+    // Also update ref immediately
+    const updated = [...trialsRef.current]
+    if (updated[currentTrial]) {
+      updated[currentTrial] = { ...updated[currentTrial], playerCardResponse: true }
+    }
+    trialsRef.current = updated
   }, [isShowingCard, config, currentTrial])
 
-  // Calculate accuracy
+  // Calculate accuracy from latest trials
   const scorableTrials = config ? trials.filter((_, i) => i >= config.nLevel) : []
   const positionAccuracy = scorableTrials.length > 0
     ? Math.round((scorableTrials.filter(t => (t.playerPositionResponse ?? false) === t.isPositionMatch).length / scorableTrials.length) * 100)
