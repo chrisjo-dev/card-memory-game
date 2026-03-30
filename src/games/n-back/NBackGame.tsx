@@ -139,11 +139,50 @@ export default function NBackGame({ onHome }: NBackGameProps) {
               onHome={onHome}
             />
             <div className="flex-1 flex items-center justify-center px-4">
-              <NBackGrid
-                activePosition={currentStimulus?.position ?? null}
-                stimulus={currentStimulus}
-                feedback={gridFeedback}
-              />
+              {config.mode === 'dual' ? (
+                <NBackGrid
+                  activePosition={currentStimulus?.position ?? null}
+                  stimulus={currentStimulus}
+                  feedback={gridFeedback}
+                />
+              ) : (
+                <div className="relative">
+                  <AnimatePresence>
+                    {currentStimulus ? (
+                      <motion.div
+                        key={currentTrial}
+                        className="w-32 h-44 bg-white rounded-xl flex flex-col items-center justify-center shadow-lg border border-gray-200"
+                        initial={{ scale: 0.5, opacity: 0 }}
+                        animate={{ scale: 1, opacity: 1 }}
+                        exit={{ scale: 0.5, opacity: 0 }}
+                        transition={{ duration: 0.15 }}
+                      >
+                        <span className={`text-4xl font-bold ${currentStimulus.card.color === 'red' ? 'text-red-600' : 'text-gray-900'}`}>
+                          {currentStimulus.card.rank}
+                        </span>
+                        <span className={`text-3xl ${currentStimulus.card.color === 'red' ? 'text-red-600' : 'text-gray-900'}`}>
+                          {currentStimulus.card.symbol}
+                        </span>
+                      </motion.div>
+                    ) : (
+                      <div className="w-32 h-44 bg-green-950 rounded-xl border-2 border-green-800/50" />
+                    )}
+                  </AnimatePresence>
+                  <AnimatePresence>
+                    {gridFeedback && (
+                      <motion.div
+                        className="absolute inset-0 flex items-center justify-center pointer-events-none"
+                        initial={{ opacity: 0, scale: 0.5 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        exit={{ opacity: 0 }}
+                        transition={{ duration: 0.2 }}
+                      >
+                        <span className="text-6xl">{gridFeedback === 'correct' ? '✅' : '❌'}</span>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </div>
+              )}
             </div>
             <NBackControls
               onPosition={pressPosition}
@@ -154,6 +193,7 @@ export default function NBackGame({ onHome }: NBackGameProps) {
               feedback={lastFeedback}
               nBackStimulus={nBackStimulus}
               nLevel={config.nLevel}
+              mode={config.mode}
             />
           </motion.div>
         )}

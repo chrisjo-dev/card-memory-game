@@ -2,19 +2,23 @@ import { useState } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
 import CardMemoryGame from './games/card-memory/CardMemoryGame'
 import NBackGame from './games/n-back/NBackGame'
+import ReverseSpanGame from './games/reverse-span/ReverseSpanGame'
 import { useGameRecords } from './games/card-memory/hooks/useGameRecords'
 import { useNBackRecords } from './games/n-back/hooks/useNBackRecords'
+import { useReverseSpanRecords } from './games/reverse-span/hooks/useReverseSpanRecords'
 
-type Screen = 'dashboard' | 'card-memory' | 'n-back'
+type Screen = 'dashboard' | 'card-memory' | 'n-back' | 'reverse-span'
 
-function Dashboard({ onSelectGame, cardMemoryBestLevel, nBackBestN }: {
-  onSelectGame: (game: 'card-memory' | 'n-back') => void
+function Dashboard({ onSelectGame, cardMemoryBestLevel, nBackBestN, reverseSpanBest }: {
+  onSelectGame: (game: Screen) => void
   cardMemoryBestLevel: number
   nBackBestN: number
+  reverseSpanBest: number
 }) {
   const games = [
     { id: 'card-memory' as const, icon: '🃏', title: 'Card Memory', desc: 'Find matching pairs', stat: `Best: Lv.${cardMemoryBestLevel}` },
-    { id: 'n-back' as const, icon: '🧠', title: 'Dual N-Back', desc: 'Working memory training', stat: `Best: ${nBackBestN}-Back` },
+    { id: 'n-back' as const, icon: '🧠', title: 'N-Back', desc: 'Working memory training', stat: `Best: ${nBackBestN}-Back` },
+    { id: 'reverse-span' as const, icon: '🔄', title: 'Reverse Span', desc: 'Memorize & reverse order', stat: reverseSpanBest > 0 ? `Best: ${reverseSpanBest}장` : '' },
   ]
 
   return (
@@ -63,6 +67,7 @@ function App() {
   const [screen, setScreen] = useState<Screen>('dashboard')
   const { records: cardRecords } = useGameRecords()
   const { bestN } = useNBackRecords()
+  const { bestSpan } = useReverseSpanRecords()
 
   const cardMemoryBestLevel = Object.keys(cardRecords).length > 0
     ? Math.max(...Object.keys(cardRecords).map(Number))
@@ -84,6 +89,7 @@ function App() {
               onSelectGame={setScreen}
               cardMemoryBestLevel={cardMemoryBestLevel}
               nBackBestN={bestN}
+              reverseSpanBest={bestSpan}
             />
           </motion.div>
         )}
@@ -109,6 +115,18 @@ function App() {
             transition={{ duration: 0.2 }}
           >
             <NBackGame onHome={() => setScreen('dashboard')} />
+          </motion.div>
+        )}
+        {screen === 'reverse-span' && (
+          <motion.div
+            key="reverse-span"
+            className="h-full"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.2 }}
+          >
+            <ReverseSpanGame onHome={() => setScreen('dashboard')} />
           </motion.div>
         )}
       </AnimatePresence>

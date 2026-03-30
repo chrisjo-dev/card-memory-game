@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion'
-import type { NBackStimulus, GridPosition } from '../types/nback'
+import type { NBackStimulus, GridPosition, NBackMode } from '../types/nback'
 
 interface NBackControlsProps {
   onPosition: () => void
@@ -10,6 +10,7 @@ interface NBackControlsProps {
   feedback: { position: boolean; card: boolean } | null
   nBackStimulus: NBackStimulus | null
   nLevel: number
+  mode?: NBackMode
 }
 
 function PositionHint({ position }: { position: GridPosition }) {
@@ -75,23 +76,28 @@ function ControlButton({ label, icon, hint, onPress, pressed, disabled, correct 
 
 export default function NBackControls({
   onPosition, onCard, positionPressed, cardPressed, disabled, feedback,
-  nBackStimulus, nLevel,
+  nBackStimulus, nLevel, mode = 'dual',
 }: NBackControlsProps) {
+  const isDual = mode === 'dual'
+  const keyHint = isDual ? '키보드: Z / X' : '키보드: X'
+
   return (
     <div className="px-4 pb-4 pt-2">
       <p className="text-white/40 text-xs text-center mb-2">
-        {nBackStimulus ? `${nLevel}번 전과 같으면 누르세요 (키보드: Z / X)` : `첫 ${nLevel}개는 기억만 하세요`}
+        {nBackStimulus ? `${nLevel}번 전과 같으면 누르세요 (${keyHint})` : `첫 ${nLevel}개는 기억만 하세요`}
       </p>
       <div className="flex gap-3">
-        <ControlButton
-          label="Same Position"
-          icon="📍"
-          hint={nBackStimulus ? <PositionHint position={nBackStimulus.position} /> : <div className="h-8" />}
-          onPress={onPosition}
-          pressed={positionPressed}
-          disabled={disabled}
-          correct={feedback?.position ?? null}
-        />
+        {isDual && (
+          <ControlButton
+            label="Same Position"
+            icon="📍"
+            hint={nBackStimulus ? <PositionHint position={nBackStimulus.position} /> : <div className="h-8" />}
+            onPress={onPosition}
+            pressed={positionPressed}
+            disabled={disabled}
+            correct={feedback?.position ?? null}
+          />
+        )}
         <ControlButton
           label="Same Card"
           icon="🃏"

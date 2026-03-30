@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { motion } from 'framer-motion'
-import type { NBackRoundConfig, Speed } from '../types/nback'
+import type { NBackRoundConfig, Speed, NBackMode } from '../types/nback'
 import { SPEED_CONFIG } from '../types/nback'
 
 interface NBackSetupProps {
@@ -16,6 +16,7 @@ export default function NBackSetup({ recommendedN, onStart, onHome, onStats }: N
   const [nLevel, setNLevel] = useState(recommendedN)
   const [trialCount, setTrialCount] = useState<number>(20)
   const [speed, setSpeed] = useState<Speed>('normal')
+  const [mode, setMode] = useState<NBackMode>('card-only')
 
   return (
     <div className="flex flex-col items-center justify-center min-h-full px-6 py-8">
@@ -54,6 +55,25 @@ export default function NBackSetup({ recommendedN, onStart, onHome, onStats }: N
       </motion.p>
 
       <div className="w-full max-w-xs space-y-6">
+        <div>
+          <p className="text-white/70 text-sm mb-2 text-center">Mode</p>
+          <div className="flex gap-2">
+            {([['card-only', 'Card Only'], ['dual', 'Dual (Card + Position)']] as [NBackMode, string][]).map(([m, label]) => (
+              <button
+                key={m}
+                onClick={() => setMode(m)}
+                className={`flex-1 py-2 rounded-lg border text-sm font-semibold transition-all ${
+                  mode === m
+                    ? 'bg-yellow-600 border-yellow-400 text-white'
+                    : 'bg-white/5 border-white/10 text-white/60'
+                }`}
+              >
+                {label}
+              </button>
+            ))}
+          </div>
+        </div>
+
         <div>
           <p className="text-white/70 text-sm mb-2 text-center">N-Back Level</p>
           <div className="grid grid-cols-5 gap-2">
@@ -117,7 +137,7 @@ export default function NBackSetup({ recommendedN, onStart, onHome, onStats }: N
         </div>
 
         <motion.button
-          onClick={() => onStart({ nLevel, trialCount, speed })}
+          onClick={() => onStart({ nLevel, trialCount, speed, mode })}
           className="w-full py-4 bg-yellow-600 hover:bg-yellow-500 text-white font-bold text-lg rounded-xl transition-colors"
           whileTap={{ scale: 0.98 }}
         >

@@ -27,11 +27,13 @@ export interface NBackTrial {
 export type NBackPhase = 'setup' | 'playing' | 'feedback' | 'result' | 'stats'
 
 export type Speed = 'slow' | 'normal' | 'fast'
+export type NBackMode = 'dual' | 'card-only'
 
 export interface NBackRoundConfig {
   nLevel: number
   trialCount: number
   speed: Speed
+  mode: NBackMode
 }
 
 export const SPEED_CONFIG: Record<Speed, { showMs: number; gapMs: number; label: string }> = {
