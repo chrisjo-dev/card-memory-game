@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { motion } from 'framer-motion'
-import type { NBackRoundConfig } from '../types/nback'
+import type { NBackRoundConfig, Speed } from '../types/nback'
+import { SPEED_CONFIG } from '../types/nback'
 
 interface NBackSetupProps {
   recommendedN: number
@@ -14,6 +15,7 @@ const TRIAL_OPTIONS = [20, 30, 40] as const
 export default function NBackSetup({ recommendedN, onStart, onHome, onStats }: NBackSetupProps) {
   const [nLevel, setNLevel] = useState(recommendedN)
   const [trialCount, setTrialCount] = useState<number>(20)
+  const [speed, setSpeed] = useState<Speed>('normal')
 
   return (
     <div className="flex flex-col items-center justify-center min-h-full px-6 py-8">
@@ -95,8 +97,27 @@ export default function NBackSetup({ recommendedN, onStart, onHome, onStats }: N
           </div>
         </div>
 
+        <div>
+          <p className="text-white/70 text-sm mb-2 text-center">Speed</p>
+          <div className="flex gap-2">
+            {(Object.keys(SPEED_CONFIG) as Speed[]).map(s => (
+              <button
+                key={s}
+                onClick={() => setSpeed(s)}
+                className={`flex-1 py-2 rounded-lg border text-sm font-semibold transition-all ${
+                  speed === s
+                    ? 'bg-yellow-600 border-yellow-400 text-white'
+                    : 'bg-white/5 border-white/10 text-white/60'
+                }`}
+              >
+                {SPEED_CONFIG[s].label}
+              </button>
+            ))}
+          </div>
+        </div>
+
         <motion.button
-          onClick={() => onStart({ nLevel, trialCount })}
+          onClick={() => onStart({ nLevel, trialCount, speed })}
           className="w-full py-4 bg-yellow-600 hover:bg-yellow-500 text-white font-bold text-lg rounded-xl transition-colors"
           whileTap={{ scale: 0.98 }}
         >

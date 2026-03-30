@@ -1,5 +1,6 @@
 import { useState, useCallback, useRef, useEffect } from 'react'
 import type { NBackPhase, NBackRoundConfig, NBackStimulus, NBackTrial } from '../types/nback'
+import { SPEED_CONFIG } from '../types/nback'
 import { generateStimuli, isPositionMatch, isCardMatch } from '../utils/stimulus'
 
 interface UseNBackLogicReturn {
@@ -81,6 +82,8 @@ export function useNBackLogic(): UseNBackLogicReturn {
       }
     })
 
+    const { gapMs, showMs } = SPEED_CONFIG[cfg.speed]
+
     feedbackTimeoutRef.current = window.setTimeout(() => {
       setLastFeedback(null)
 
@@ -109,8 +112,8 @@ export function useNBackLogic(): UseNBackLogicReturn {
 
       timeoutRef.current = window.setTimeout(() => {
         advanceTrial(nextTrial, cfg, stimuli)
-      }, 2000)
-    }, 500)
+      }, showMs)
+    }, gapMs)
   }, [trials])
 
   const startRound = useCallback((cfg: NBackRoundConfig) => {
@@ -134,9 +137,10 @@ export function useNBackLogic(): UseNBackLogicReturn {
     }]
     setTrials(initialTrials)
 
+    const { showMs } = SPEED_CONFIG[cfg.speed]
     timeoutRef.current = window.setTimeout(() => {
       advanceTrial(0, cfg, stimuli)
-    }, 2000)
+    }, showMs)
   }, [clearTimeouts, advanceTrial])
 
   const pressPosition = useCallback(() => {

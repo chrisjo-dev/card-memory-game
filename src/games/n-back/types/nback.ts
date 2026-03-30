@@ -26,9 +26,18 @@ export interface NBackTrial {
 
 export type NBackPhase = 'setup' | 'playing' | 'feedback' | 'result' | 'stats'
 
+export type Speed = 'slow' | 'normal' | 'fast'
+
 export interface NBackRoundConfig {
   nLevel: number
   trialCount: number
+  speed: Speed
+}
+
+export const SPEED_CONFIG: Record<Speed, { showMs: number; gapMs: number; label: string }> = {
+  slow: { showMs: 3000, gapMs: 500, label: 'Slow' },
+  normal: { showMs: 2000, gapMs: 500, label: 'Normal' },
+  fast: { showMs: 1500, gapMs: 400, label: 'Fast' },
 }
 
 export interface NBackSessionRecord {
