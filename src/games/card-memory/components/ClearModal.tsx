@@ -14,11 +14,11 @@ interface ClearModalProps {
 
 function AnimatedStars({ count }: { count: number }) {
   return (
-    <div className="flex gap-2 justify-center my-4">
+    <div className="flex gap-3 justify-center my-5">
       {[1, 2, 3].map(i => (
         <motion.span
           key={i}
-          className={`text-4xl ${i <= count ? 'text-yellow-400' : 'text-gray-600'}`}
+          className={`text-4xl ${i <= count ? 'text-[var(--casino-gold)] drop-shadow-[0_0_8px_rgba(201,168,76,0.5)]' : 'text-white/10'}`}
           initial={{ opacity: 0, scale: 0, rotate: -180 }}
           animate={{ opacity: 1, scale: 1, rotate: 0 }}
           transition={{ delay: 0.3 + i * 0.2, type: 'spring', stiffness: 200 }}
@@ -31,59 +31,58 @@ function AnimatedStars({ count }: { count: number }) {
 }
 
 export default function ClearModal({
-  level,
-  stars,
-  attempts,
-  seconds,
-  isLastLevel,
-  onRetry,
-  onNextLevel,
-  onHome,
+  level, stars, attempts, seconds, isLastLevel, onRetry, onNextLevel, onHome,
 }: ClearModalProps) {
   return (
     <motion.div
-        className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-6"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
+      className="fixed inset-0 flex items-center justify-center z-50 p-6"
+      style={{ background: 'rgba(0,0,0,0.65)', backdropFilter: 'blur(8px)' }}
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+    >
+      <motion.div
+        className="glass-card rounded-2xl p-7 w-full max-w-sm text-center"
+        initial={{ scale: 0.7, opacity: 0 }}
+        animate={{ scale: 1, opacity: 1 }}
+        transition={{ type: 'spring', stiffness: 200, delay: 0.1 }}
       >
-        <motion.div
-          className="bg-gradient-to-b from-green-900 to-green-950 rounded-2xl border border-yellow-600/40 p-6 w-full max-w-sm text-center"
-          initial={{ scale: 0.7, opacity: 0 }}
-          animate={{ scale: 1, opacity: 1 }}
-          transition={{ type: 'spring', stiffness: 200, delay: 0.1 }}
+        <h2
+          className="text-2xl font-black text-[var(--casino-gold)] tracking-tight"
+          style={{ fontFamily: 'var(--font-display)' }}
         >
-          <h2 className="text-2xl font-bold text-yellow-400 font-serif">Level {level} Clear!</h2>
+          Level {level} Clear!
+        </h2>
 
-          <AnimatedStars count={stars} />
+        <AnimatedStars count={stars} />
 
-          <div className="space-y-2 text-white/80 mb-6">
-            <p>Attempts: <span className="text-white font-semibold">{attempts}</span></p>
-            <p>Time: <span className="text-white font-semibold">{formatTime(seconds)}</span></p>
-          </div>
+        <div className="space-y-1.5 text-sm text-white/50 mb-6">
+          <p>Attempts <span className="text-white/90 font-semibold ml-1">{attempts}</span></p>
+          <p>Time <span className="text-white/90 font-semibold font-mono ml-1">{formatTime(seconds)}</span></p>
+        </div>
 
-          <div className="flex flex-col gap-2">
-            {!isLastLevel && (
-              <button
-                onClick={onNextLevel}
-                className="w-full py-3 bg-yellow-600 hover:bg-yellow-500 text-white font-semibold rounded-xl transition-colors"
-              >
-                Next Level →
-              </button>
-            )}
+        <div className="flex flex-col gap-2">
+          {!isLastLevel && (
             <button
-              onClick={onRetry}
-              className="w-full py-3 bg-white/10 hover:bg-white/20 text-white rounded-xl transition-colors"
+              onClick={onNextLevel}
+              className="btn-gold w-full py-3 rounded-xl text-sm"
             >
-              Retry
+              Next Level →
             </button>
-            <button
-              onClick={onHome}
-              className="w-full py-2 text-white/50 hover:text-white/80 text-sm transition-colors"
-            >
-              Home
-            </button>
-          </div>
-        </motion.div>
+          )}
+          <button
+            onClick={onRetry}
+            className="w-full py-3 glass-card hover:bg-white/10 text-white/80 rounded-xl transition-colors text-sm"
+          >
+            Retry
+          </button>
+          <button
+            onClick={onHome}
+            className="w-full py-2 text-white/30 hover:text-white/60 text-xs transition-colors"
+          >
+            Dashboard
+          </button>
+        </div>
       </motion.div>
+    </motion.div>
   )
 }

@@ -11,7 +11,7 @@ interface CardProps {
 export default function Card({ card, onClick, disabled }: CardProps) {
   const isOpen = card.isFlipped || card.isMatched
   const symbol = getSuitSymbol(card.suit)
-  const textColor = card.color === 'red' ? 'text-red-600' : 'text-gray-900'
+  const textColor = card.color === 'red' ? 'text-red-500' : 'text-gray-800'
 
   return (
     <div
@@ -37,41 +37,40 @@ export default function Card({ card, onClick, disabled }: CardProps) {
         transition={{ duration: 0.4, ease: 'easeInOut' }}
       >
         <div
-          className="absolute inset-0 rounded-lg border-2 border-yellow-600 flex items-center justify-center"
-          style={{
-            backfaceVisibility: 'hidden',
-            background: 'linear-gradient(135deg, #1a5c32 0%, #0d3d1f 100%)',
-          }}
-        >
-          <div className="w-3/4 h-3/4 rounded border border-yellow-700/50 flex items-center justify-center">
-            <div className="text-yellow-700/60 text-2xl font-serif">&#9830;</div>
-          </div>
-        </div>
+          className="absolute inset-0 rounded-xl card-back-pattern shadow-lg"
+          style={{ backfaceVisibility: 'hidden' }}
+        />
 
         <div
-          className="absolute inset-0 bg-white rounded-lg border border-gray-300 flex flex-col p-1 overflow-hidden"
+          className="absolute inset-0 rounded-xl border border-gray-200 flex flex-col p-1.5 overflow-hidden shadow-lg"
           style={{
             backfaceVisibility: 'hidden',
             transform: 'rotateY(180deg)',
+            background: 'linear-gradient(145deg, #ffffff 0%, #f8f6f0 100%)',
           }}
         >
           <div className={`flex flex-col items-center leading-none ${textColor} text-[clamp(0.6rem,2vw,0.9rem)]`}>
-            <span className="font-bold">{card.rank}</span>
+            <span className="font-bold" style={{ fontFamily: 'var(--font-display)' }}>{card.rank}</span>
             <span className="text-[0.7em]">{symbol}</span>
           </div>
 
           <div className={`flex-1 flex items-center justify-center ${textColor}`}>
-            <span className="text-[clamp(1.5rem,5vw,2.5rem)]">{symbol}</span>
+            <span className="text-[clamp(1.5rem,5vw,2.5rem)] drop-shadow-sm">{symbol}</span>
           </div>
 
           <div className={`flex flex-col items-center leading-none self-end rotate-180 ${textColor} text-[clamp(0.6rem,2vw,0.9rem)]`}>
-            <span className="font-bold">{card.rank}</span>
+            <span className="font-bold" style={{ fontFamily: 'var(--font-display)' }}>{card.rank}</span>
             <span className="text-[0.7em]">{symbol}</span>
           </div>
 
           {card.isMatched && (
             <motion.div
-              className="absolute inset-0 rounded-lg bg-green-400/20 border-2 border-green-400"
+              className="absolute inset-0 rounded-xl"
+              style={{
+                background: 'radial-gradient(circle, rgba(74,222,128,0.15) 0%, rgba(74,222,128,0.05) 70%)',
+                border: '2px solid rgba(74,222,128,0.5)',
+                boxShadow: '0 0 15px rgba(74,222,128,0.2)',
+              }}
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
             />

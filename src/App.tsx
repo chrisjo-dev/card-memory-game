@@ -9,55 +9,102 @@ import { useReverseSpanRecords } from './games/reverse-span/hooks/useReverseSpan
 
 type Screen = 'dashboard' | 'card-memory' | 'n-back' | 'reverse-span'
 
+function GameCard({ icon, title, desc, stat, delay, onClick }: {
+  icon: string; title: string; desc: string; stat: string; delay: number; onClick: () => void
+}) {
+  return (
+    <motion.button
+      onClick={onClick}
+      className="w-full glass-card rounded-2xl p-5 text-left hover:border-[var(--casino-gold)]/40 active:scale-[0.98] transition-all group"
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ delay, type: 'spring', stiffness: 150, damping: 20 }}
+      whileHover={{ y: -2 }}
+      whileTap={{ scale: 0.98 }}
+    >
+      <div className="flex items-center gap-4">
+        <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-[var(--casino-gold)]/20 to-transparent border border-[var(--casino-gold)]/20 flex items-center justify-center text-2xl group-hover:scale-110 transition-transform">
+          {icon}
+        </div>
+        <div className="flex-1 min-w-0">
+          <h2 className="text-base font-bold text-[var(--casino-cream)] tracking-wide" style={{ fontFamily: 'var(--font-display)' }}>
+            {title}
+          </h2>
+          <p className="text-white/40 text-xs mt-0.5">{desc}</p>
+        </div>
+        {stat && (
+          <div className="text-right">
+            <span className="text-[var(--casino-gold)] text-xs font-semibold">{stat}</span>
+          </div>
+        )}
+      </div>
+    </motion.button>
+  )
+}
+
 function Dashboard({ onSelectGame, cardMemoryBestLevel, nBackBestN, reverseSpanBest }: {
   onSelectGame: (game: Screen) => void
   cardMemoryBestLevel: number
   nBackBestN: number
   reverseSpanBest: number
 }) {
-  const games = [
-    { id: 'card-memory' as const, icon: '🃏', title: 'Card Memory', desc: 'Find matching pairs', stat: `Best: Lv.${cardMemoryBestLevel}` },
-    { id: 'n-back' as const, icon: '🧠', title: 'N-Back', desc: 'Working memory training', stat: `Best: ${nBackBestN}-Back` },
-    { id: 'reverse-span' as const, icon: '🔄', title: 'Reverse Span', desc: 'Memorize & reverse order', stat: reverseSpanBest > 0 ? `Best: ${reverseSpanBest}장` : '' },
-  ]
-
   return (
     <div className="flex flex-col items-center justify-center min-h-full px-6">
+      <motion.div
+        className="mb-1 text-[var(--casino-gold)]/30 text-5xl"
+        initial={{ opacity: 0, scale: 0.5, rotate: -10 }}
+        animate={{ opacity: 1, scale: 1, rotate: 0 }}
+        transition={{ type: 'spring', stiffness: 100 }}
+      >
+        ♠ ♥ ♦ ♣
+      </motion.div>
       <motion.h1
-        className="text-4xl font-bold text-yellow-400 font-serif mb-2"
-        initial={{ opacity: 0, y: -20 }}
+        className="text-gold-shimmer text-4xl font-black tracking-tight mb-1"
+        style={{ fontFamily: 'var(--font-display)' }}
+        initial={{ opacity: 0, y: -15 }}
         animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.15 }}
       >
         Brain Training
       </motion.h1>
-      <motion.p
-        className="text-white/50 text-sm mb-10"
+      <motion.div
+        className="flex items-center gap-3 mb-10"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
-        transition={{ delay: 0.1 }}
+        transition={{ delay: 0.3 }}
       >
-        Train your memory
-      </motion.p>
-      <div className="w-full max-w-xs space-y-4">
-        {games.map((game, i) => (
-          <motion.button
-            key={game.id}
-            onClick={() => onSelectGame(game.id)}
-            className="w-full bg-white/10 border border-yellow-600/40 rounded-2xl p-5 text-left hover:bg-white/20 active:scale-[0.98] transition-all"
-            initial={{ opacity: 0, x: -30 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: 0.15 * i }}
-          >
-            <div className="flex items-center gap-4">
-              <span className="text-3xl">{game.icon}</span>
-              <div className="flex-1">
-                <h2 className="text-lg font-bold text-yellow-400">{game.title}</h2>
-                <p className="text-white/50 text-sm">{game.desc}</p>
-              </div>
-              <span className="text-white/40 text-xs">{game.stat}</span>
-            </div>
-          </motion.button>
-        ))}
+        <div className="h-px w-8 bg-gradient-to-r from-transparent to-[var(--casino-gold)]/30" />
+        <p className="text-white/30 text-xs tracking-[0.2em] uppercase" style={{ fontFamily: 'var(--font-body)' }}>
+          Train your memory
+        </p>
+        <div className="h-px w-8 bg-gradient-to-l from-transparent to-[var(--casino-gold)]/30" />
+      </motion.div>
+
+      <div className="w-full max-w-sm space-y-3">
+        <GameCard
+          icon="🃏"
+          title="Card Memory"
+          desc="Find matching card pairs"
+          stat={cardMemoryBestLevel > 0 ? `Lv.${cardMemoryBestLevel}` : ''}
+          delay={0.25}
+          onClick={() => onSelectGame('card-memory')}
+        />
+        <GameCard
+          icon="🧠"
+          title="N-Back"
+          desc="Working memory training"
+          stat={nBackBestN > 1 ? `${nBackBestN}-Back` : ''}
+          delay={0.35}
+          onClick={() => onSelectGame('n-back')}
+        />
+        <GameCard
+          icon="🔄"
+          title="Reverse Span"
+          desc="Memorize & reverse the order"
+          stat={reverseSpanBest > 0 ? `${reverseSpanBest} cards` : ''}
+          delay={0.45}
+          onClick={() => onSelectGame('reverse-span')}
+        />
       </div>
     </div>
   )
@@ -83,7 +130,7 @@ function App() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            transition={{ duration: 0.2 }}
+            transition={{ duration: 0.25 }}
           >
             <Dashboard
               onSelectGame={setScreen}
@@ -100,7 +147,7 @@ function App() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            transition={{ duration: 0.2 }}
+            transition={{ duration: 0.25 }}
           >
             <CardMemoryGame onHome={() => setScreen('dashboard')} />
           </motion.div>
@@ -112,7 +159,7 @@ function App() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            transition={{ duration: 0.2 }}
+            transition={{ duration: 0.25 }}
           >
             <NBackGame onHome={() => setScreen('dashboard')} />
           </motion.div>
@@ -124,7 +171,7 @@ function App() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            transition={{ duration: 0.2 }}
+            transition={{ duration: 0.25 }}
           >
             <ReverseSpanGame onHome={() => setScreen('dashboard')} />
           </motion.div>
