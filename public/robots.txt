@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://brain.wspace.ai.kr/sitemap.xml

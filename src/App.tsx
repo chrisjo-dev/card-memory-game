@@ -106,6 +106,47 @@ function Dashboard({ onSelectGame, cardMemoryBestLevel, nBackBestN, reverseSpanB
           onClick={() => onSelectGame('reverse-span')}
         />
       </div>
+
+      <motion.section
+        className="w-full max-w-sm mt-6 glass-card rounded-2xl p-5"
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.55 }}
+        aria-label="게임 소개 및 하는 방법"
+      >
+        <h2 className="text-sm font-bold text-[var(--casino-gold)] mb-3 tracking-wide">게임 소개 / 하는 방법</h2>
+        <div className="space-y-2 text-xs text-white/50 leading-relaxed">
+          <p>Brain Training은 기억력, 집중력을 키우는 뇌 훈련 게임 모음입니다.</p>
+          <p><span className="text-white/70">🃏 카드 메모리</span> — 카드를 두 장씩 뒤집어 같은 숫자의 쌍을 모두 찾으면 클리어. 레벨 1(8장)부터 레벨 5(24장)까지 점점 어려워집니다.</p>
+          <p><span className="text-white/70">🧠 N-Back</span> — 3×3 격자에 카드가 순서대로 나타날 때, N단계 전과 위치나 카드가 같으면 버튼을 누릅니다. 정확도에 따라 난이도가 자동 조정됩니다.</p>
+          <p><span className="text-white/70">🔄 역방향 스팬</span> — 차례로 보여주는 카드를 기억한 뒤 역순으로 입력합니다. 성공할수록 카드 수가 늘어납니다.</p>
+          <p className="text-white/30 pt-1">게임 기록은 이 기기의 브라우저에만 저장됩니다.</p>
+        </div>
+      </motion.section>
+
+      <motion.footer
+        className="w-full max-w-sm mt-4 mb-8 flex flex-wrap justify-center gap-x-4 gap-y-1"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 0.65 }}
+      >
+        {[
+          { label: 'wspace 홈', href: 'https://www.wspace.ai.kr/' },
+          { label: '소개', href: 'https://www.wspace.ai.kr/about/' },
+          { label: '개인정보처리방침', href: 'https://www.wspace.ai.kr/privacy/' },
+          { label: '연락처', href: 'https://www.wspace.ai.kr/contact/' },
+        ].map(({ label, href }) => (
+          <a
+            key={href}
+            href={href}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-white/25 text-xs hover:text-white/50 transition-colors"
+          >
+            {label}
+          </a>
+        ))}
+      </motion.footer>
     </div>
   )
 }
