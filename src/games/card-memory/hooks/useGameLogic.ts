@@ -37,6 +37,7 @@ export function useGameLogic(onFirstFlip: () => void, onClear: () => void): UseG
       hasStarted.current = true
       setGameState('playing')
       onFirstFlip()
+      window.gtag && window.gtag('event', 'game_start', { game: 'card-memory' })
     }
 
     const newCards = [...cards]

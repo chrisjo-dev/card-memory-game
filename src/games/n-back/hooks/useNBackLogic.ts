@@ -129,6 +129,7 @@ export function useNBackLogic(): UseNBackLogicReturn {
 
   const startRound = useCallback((cfg: NBackRoundConfig) => {
     clearTimeouts()
+    window.gtag && window.gtag('event', 'game_start', { game: 'n-back' })
     const stimuli = generateStimuli(cfg)
     stimuliRef.current = stimuli
     setConfig(cfg)

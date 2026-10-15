@@ -40,6 +40,7 @@ export function useReverseSpanLogic() {
 
   const startRound = useCallback((length?: number) => {
     clearTimeouts()
+    window.gtag && window.gtag('event', 'game_start', { game: 'reverse-span' })
     const len = length ?? spanLength
     setSpanLength(len)
     const seq = generateSequence(len)
